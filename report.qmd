@@ -60,10 +60,10 @@ ev_reg_clean <- ev_reg|>
     select(3:4)
 ```
 ## Overview
-This report investigates the relationship between the average cost of energy across different states and the number of electric vehicles (ev) registered in 2023. The main research question is: *Do states with lower energy prices support higher EV adoption?*
+This report investigates the relationship between the average cost of energy and the number of electric vehicles (ev) registered in 2023 across different states. The main research question is: *Do states with lower energy prices support higher EV adoption?*
 
 ## Data and Methods
-We use datasets containing the average energy price per state from 2021 to 2023 and EV registrations in 2023. These were read from csv files and edited using dplyr and stringr to normalize. The table below shows the top five states with the largest changes in average energy price between 2021 and 2023. For each state, we include the 2021 and 2023 prices, the calculated price change, and the price direction (increase or decrease). This summary allows us to quickly identify which states experienced the biggest shifts in energy costs and sets the stage for comparing these changes to EV registration counts in the map visualization. By examining the extremes, we can better interpret patterns in EV adoption relative to energy price trends.
+We use datasets containing the average energy price per state from 2021 to 2023 and EV registrations in 2023. These were read from csv files and edited using dplyr and stringr to normalize and merge. The table below shows the top and bottom five states for changes in average energy price between 2021 and 2023. For each state, we include the 2021 and 2023 prices, the calculated price change, the change direction (increase or decrease), and the EV count. This lets us examine which states experienced the biggest and smallest shifts in energy costs and sets the stage for comparing these changes to EV registration counts in the map visualization. By comparing price over time, we can better interpret patterns in EV adoption relative to energy price trends. Unfortunately the data on EV registration is not available but it would be interesting to see how EV registration has changed with price change.
 
 ```{r}
 #| echo: false
@@ -84,7 +84,7 @@ state_prices_registrations <- left_join(avg_price_clean, ev_reg_clean, by = "sta
 state_prices_registrations |>
   arrange(desc(price_change)) |>
   select(state, price_2021, price_2023, price_change, price_direction, EV_count) |>
-  head(5)
+  slice(1:5, 48:52)
 ```
 ## Visualization
 ```{r}
@@ -132,8 +132,8 @@ ggplot() +
 ```
 
 ## Analysis
-The map visualization and the expanded summary table reveal several clear patterns. States with smaller increases or decreases in average energy prices, such as California, Arizona, and Colorado, tend to have the highest EV registration counts. Conversely, states with larger price increases often have fewer EVs. This suggests that lower or more stable energy costs may encourage EV adoption.
+The initial summary table reveals a couple interesting features. There was only one state in which energy prices did not increase from 2021 to 2023, Louisianna. Additionally, there was a slight trend in which states with smaller increases (Texas, Iowa, Wyoming) or the one state with a decrease tended to have lower EV counts than the states with the highest price increases (Hawaii, Nevada, Maine and California). This is not by any means definitive as there are states with small increases that have high EV counts, however it suggests that the opposite of our hypothesis is true: Higher energy prices seem to support higher EV counts. The outliers indicate that while energy price is likely a factor in EV registration, other regional or policy factors likely highly contribute to EV rates.
 
-Additionally, by comparing the price change and EV registration columns in the table, we see that states experiencing moderate price increases can still have substantial EV registrations if they are traditionally high-adoption states (e.g., California). This indicates that while energy price is likely an influential factor, other regional or policy factors may also contribute to EV adoption.
+The map solidifies the trend seen when examining the extremes of price changes. The states with higher energy price changes tended to have more EV registrations than those with lower changes. The map also reveals a spatial trend, with the east and west coasts having both higher energy price changes and EV registrations than the midwest. This further supports the theory that increases in energy prices can be used to predict EV registrations but that regional and other policy factors are also highly influential in both.
 
-Overall, the combination of the map and the data table helps answer the research question by showing that there is a general trend linking lower energy prices to higher EV registrations, though the relationship is not strictly linear. Further analysis, such as a scatter plot or correlation analysis, could quantify this relationship more precisely.
+Overall, the combination of the map and the data table helps answer the research question by showing that there is a general trend linking higher energy prices to higher EV registrations, though the relationship is not strictly linear. Further analysis, such as a scatter plot or correlation analysis, could quantify this relationship more precisely.
